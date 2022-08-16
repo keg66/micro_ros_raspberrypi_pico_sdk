@@ -19,6 +19,8 @@ void timer_callback(rcl_timer_t *timer, int64_t last_call_time)
 {
     rcl_ret_t ret = rcl_publish(&publisher, &msg, NULL);
     msg.data++;
+
+    gpio_put(LED_PIN, msg.data % 2);
 }
 
 int main()
