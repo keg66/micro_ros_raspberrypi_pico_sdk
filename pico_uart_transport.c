@@ -40,7 +40,7 @@ size_t pico_serial_transport_write(struct uxrCustomTransport * transport, uint8_
     return len;
 }
 
-size_t pico_serial_transport_read(struct uxrCustomTransport * transport, uint8_t *buf, size_t len, int timeout, uint8_t *errcode)
+size_t pico_serial_transport_read(struct uxrCustomTransport * transport, uint8_t *buf, size_t len, int timeout /* msec */, uint8_t *errcode)
 {
     uint64_t start_time_us = time_us_64();
     for (size_t i = 0; i < len; i++)
@@ -52,7 +52,7 @@ size_t pico_serial_transport_read(struct uxrCustomTransport * transport, uint8_t
             return i;
         }
 
-        int character = getchar_timeout_us(elapsed_time_us);
+        int character = getchar_timeout_us(elapsed_time_us); // the character from 0-255 or PICO_ERROR_TIMEOUT if timeout occurs
         if (character == PICO_ERROR_TIMEOUT)
         {
             *errcode = 1;
