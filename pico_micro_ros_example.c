@@ -23,6 +23,12 @@ void timer_callback(rcl_timer_t *timer, int64_t last_call_time)
     gpio_put(LED_PIN, msg.data % 2);
 }
 
+void subscription_callback(const void * msgin)
+{
+	const std_msgs__msg__Int32 * msg_ptr = (const std_msgs__msg__Int32 *)msgin;
+    msg = *msg_ptr;
+}
+
 int main()
 {
     rmw_uros_set_custom_transport(
@@ -42,6 +48,7 @@ int main()
     rcl_allocator_t allocator;
     rclc_support_t support;
     rclc_executor_t executor;
+    rcl_subscription_t subscriber;
 
     allocator = rcl_get_default_allocator(); // Return a properly initialized rcl_allocator_t with default values.
 
@@ -72,10 +79,17 @@ int main()
         RCL_MS_TO_NS(1000) /* timeout_ns */,
         timer_callback); // Creates an rcl timer.
 
-    rclc_executor_init(&executor, &support.context, 1 /* number_of_handles */, &allocator); // Initializes an executor.
+    rclc_subscription_init_default(
+		&subscriber,
+		&node,
+		ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
+		"std_msgs_msg_Int32");
+
+    rclc_executor_init(&executor, &support.context, 2 /* number_of_handles */, &allocator); // Initializes an executor.
     // number_of_handles: the total number of subscriptions, timers, services, clients and guard conditions. 
     //                    Do not include the number of nodes and publishers.
     rclc_executor_add_timer(&executor, &timer); // Adds a timer to an executor.
+    rclc_executor_add_subscription(&executor, &subscriber, &msg, &subscription_callback, ON_NEW_DATA);
 
     gpio_put(LED_PIN, 1);
 
