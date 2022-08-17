@@ -9,18 +9,28 @@ set(CMAKE_CXX_STANDARD 17)
 pico_sdk_init()
 
 link_directories(libmicroros)
-add_executable(pico_micro_ros_example
-    pico_micro_ros_example.c
+add_library(pico_micro_ros
     src/pico_uart_transport.c
     src/pico_micro_ros.c
 )
-target_link_libraries(pico_micro_ros_example
+target_link_libraries(pico_micro_ros
     pico_stdlib
     microros
 )
+target_include_directories(pico_micro_ros PUBLIC
+    libmicroros/include
+    include
+)
+
+add_executable(pico_micro_ros_example
+    pico_micro_ros_example.c
+)
+target_link_libraries(pico_micro_ros_example
+    pico_stdlib
+    pico_micro_ros
+)
 
 target_include_directories(pico_micro_ros_example PUBLIC
-    libmicroros/include
     include
 )
 
