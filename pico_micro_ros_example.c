@@ -8,7 +8,7 @@
 #include <rmw_microros/rmw_microros.h>
 
 #include "pico/stdlib.h"
-#include "pico_uart_transports.h"
+#include "pico_micro_ros.h"
 
 const uint LED_PIN = 25;
 
@@ -31,14 +31,7 @@ void subscription_callback(const void * msgin)
 
 int main()
 {
-    rmw_uros_set_custom_transport(
-		true, // Framing enabled here. Using Stream-oriented mode.
-		NULL, // void * args,
-		pico_serial_transport_open,
-		pico_serial_transport_close,
-		pico_serial_transport_write,
-		pico_serial_transport_read
-	);
+    init_rmw_uros();
 
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT); // Set a single GPIO direction.
