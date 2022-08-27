@@ -1,1 +1,0 @@
-int rust_function();

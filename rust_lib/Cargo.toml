@@ -26,6 +26,9 @@ rp-pico = "0.4"
 
 cty = "0.2"
 
+[build-dependencies]
+cbindgen = "0.24"
+
 [lib]
 name = "rustlib"
 crate-type = ["staticlib"] 

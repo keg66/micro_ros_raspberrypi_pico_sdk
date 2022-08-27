@@ -8,6 +8,8 @@
 //! updating `memory.x` ensures a rebuild of the application with the
 //! new memory settings.
 
+extern crate cbindgen;
+
 use std::env;
 use std::fs::File;
 use std::io::Write;
@@ -28,4 +30,11 @@ fn main() {
     // here, we ensure the build script is only re-run when
     // `memory.x` is changed.
     println!("cargo:rerun-if-changed=memory.x");
+
+    let crate_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
+    let mut config: cbindgen::Config = Default::default();
+    config.language = cbindgen::Language::C;
+    cbindgen::generate_with_config(&crate_dir, config)
+        .unwrap()
+        .write_to_file("target/include/rustlib.h");
 }

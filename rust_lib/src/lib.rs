@@ -26,7 +26,7 @@ use panic_probe as _;
 use cty::c_int;
 
 #[no_mangle]
-extern "C" fn rust_function() -> c_int {
+pub extern "C" fn rust_function() -> c_int {
     123
 }
 
