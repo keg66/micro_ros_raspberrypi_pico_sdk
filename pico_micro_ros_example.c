@@ -4,8 +4,10 @@
 #include <rcl/error_handling.h>
 #include <rclc/rclc.h>
 #include <rclc/executor.h>
-#include <std_msgs/msg/int32.h>
 #include <rmw_microros/rmw_microros.h>
+
+#include <std_msgs/msg/int32.h>
+#include <std_msgs/msg/bool.h>
 
 #include "pico/stdlib.h"
 #include "pico_uart_transports.h"
@@ -21,14 +23,12 @@ void timer_callback(rcl_timer_t* timer, int64_t last_call_time)
 {
   rcl_ret_t ret = rcl_publish(&publisher, &msg, NULL);
   msg.data += rust_function();
-
-  gpio_put(LED_PIN, msg.data % 2);
 }
 
 void subscription_callback(const void* msgin)
 {
-  const std_msgs__msg__Int32* msg_ptr = (const std_msgs__msg__Int32*)msgin;
-  msg = *msg_ptr;
+  const std_msgs__msg__Bool* msg_ptr = (const std_msgs__msg__Bool*)msgin;
+  gpio_put(LED_PIN, msg_ptr->data);
 }
 
 int main()
@@ -74,8 +74,8 @@ int main()
   rclc_timer_init_default(&timer, &support, RCL_MS_TO_NS(1000) /* timeout_ns */,
                           timer_callback);  // Creates an rcl timer.
 
-  rclc_subscription_init_default(&subscriber, &node, ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
-                                 "std_msgs_msg_Int32");
+  rclc_subscription_init_default(&subscriber, &node, ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Bool),
+                                 "std_msgs_msg_Bool");
 
   rclc_executor_init(&executor, &support.context, 2 /* number_of_handles */, &allocator);  // Initializes an executor.
   // number_of_handles: the total number of subscriptions, timers, services, clients and guard conditions.
