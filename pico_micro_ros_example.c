@@ -10,6 +10,8 @@
 #include "pico/stdlib.h"
 #include "pico_micro_ros.h"
 
+#include "rustlib.h"
+
 const uint LED_PIN = 25;
 
 rcl_publisher_t publisher;  // publisher struct in rcl
@@ -18,7 +20,7 @@ std_msgs__msg__Int32 msg;
 void timer_callback(rcl_timer_t* timer, int64_t last_call_time)
 {
   rcl_ret_t ret = rcl_publish(&publisher, &msg, NULL);
-  msg.data++;
+  msg.data += rust_function();
 
   gpio_put(LED_PIN, msg.data % 2);
 }

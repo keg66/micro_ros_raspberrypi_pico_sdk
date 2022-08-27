@@ -1,14 +1,11 @@
-/build
-pico-sdk
-
-rust_lib/**/*.rs.bk
-rust_lib/.#*
-rust_lib/.gdb_history
-rust_lib/Cargo.lock
-rust_lib/target/
+**/*.rs.bk
+.#*
+.gdb_history
+Cargo.lock
+target/
 
 # editor files
-rust_lib/.vscode/*
+.vscode/*
 !.vscode/*.md
 !.vscode/*.svd
 !.vscode/launch.json

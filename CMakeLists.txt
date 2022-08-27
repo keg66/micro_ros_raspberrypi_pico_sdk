@@ -22,16 +22,19 @@ target_include_directories(pico_micro_ros PUBLIC
     include
 )
 
+link_directories(rust_lib/target/thumbv6m-none-eabi/debug)
 add_executable(pico_micro_ros_example
     pico_micro_ros_example.c
 )
 target_link_libraries(pico_micro_ros_example
     pico_stdlib
     pico_micro_ros
+    rustlib
 )
 
 target_include_directories(pico_micro_ros_example PUBLIC
     include
+    rust_lib/include
 )
 
 
