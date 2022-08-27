@@ -22,14 +22,30 @@ target_include_directories(pico_micro_ros PUBLIC
     include
 )
 
-link_directories(rust_lib/target/thumbv6m-none-eabi/debug)
+include(ExternalProject)
+set_directory_properties(PROPERTIES EP_PREFIX ${CMAKE_BINARY_DIR}/Rust)
+
+ExternalProject_Add(
+    rustlib
+    DOWNLOAD_COMMAND ""
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND cargo build COMMAND cargo build --release
+    SOURCE_DIR "${CMAKE_SOURCE_DIR}/rust_lib"
+    BINARY_DIR "${CMAKE_SOURCE_DIR}/rust_lib/target"
+    INSTALL_COMMAND ""
+    LOG_BUILD ON
+)
+
 add_executable(pico_micro_ros_example
     pico_micro_ros_example.c
 )
+
+add_dependencies(pico_micro_ros_example rustlib)
+
 target_link_libraries(pico_micro_ros_example
     pico_stdlib
     pico_micro_ros
-    rustlib
+    ${CMAKE_SOURCE_DIR}/rust_lib/target/thumbv6m-none-eabi/debug/librustlib.a
 )
 
 target_include_directories(pico_micro_ros_example PUBLIC
@@ -38,17 +54,17 @@ target_include_directories(pico_micro_ros_example PUBLIC
 )
 
 
-add_library(main_test
-    src/main_test.c
-)
-target_link_libraries(main_test
-    # pico_stdlib
-    microros
-)
-target_include_directories(main_test PUBLIC
-    libmicroros/include
-    include
-)
+# add_library(main_test
+#     src/main_test.c
+# )
+# target_link_libraries(main_test
+#     # pico_stdlib
+#     microros
+# )
+# target_include_directories(main_test PUBLIC
+#     libmicroros/include
+#     include
+# )
 
 SET(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -ffunction-sections -fdata-sections")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -ffunction-sections -fdata-sections")
