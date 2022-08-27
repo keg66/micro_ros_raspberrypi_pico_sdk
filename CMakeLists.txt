@@ -15,11 +15,12 @@ ExternalProject_Add(
     rustlib
     DOWNLOAD_COMMAND ""
     CONFIGURE_COMMAND ""
-    BUILD_COMMAND cargo build COMMAND cargo build --release
+    BUILD_COMMAND cargo build 
+    #COMMAND cargo build --release
     SOURCE_DIR "${CMAKE_SOURCE_DIR}/rust_lib"
     BINARY_DIR "${CMAKE_SOURCE_DIR}/rust_lib/target"
     INSTALL_COMMAND ""
-    LOG_BUILD ON
+    LOG_MERGED_STDOUTERR ON
 )
 
 link_directories(libmicroros)
