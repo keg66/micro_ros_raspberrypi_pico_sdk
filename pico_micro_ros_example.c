@@ -14,8 +14,6 @@
 
 #include "rustlib.h"
 
-const uint LED_PIN = 25;
-
 rcl_publisher_t publisher;  // publisher struct in rcl
 std_msgs__msg__Int32 msg;
 
@@ -28,7 +26,7 @@ void timer_callback(rcl_timer_t* timer, int64_t last_call_time)
 void subscription_callback(const void* msgin)
 {
   const std_msgs__msg__Bool* msg_ptr = (const std_msgs__msg__Bool*)msgin;
-  gpio_put(LED_PIN, msg_ptr->data);
+  rust_led_put(msg_ptr->data);  // system halt when call this function twice...
 }
 
 int main()
@@ -37,9 +35,6 @@ int main()
                                 NULL,  // void * args,
                                 pico_serial_transport_open, pico_serial_transport_close, pico_serial_transport_write,
                                 pico_serial_transport_read);
-
-  gpio_init(LED_PIN);
-  gpio_set_dir(LED_PIN, GPIO_OUT);  // Set a single GPIO direction.
 
   rcl_timer_t timer;
   rcl_node_t node;
@@ -82,8 +77,6 @@ int main()
   //                    Do not include the number of nodes and publishers.
   rclc_executor_add_timer(&executor, &timer);  // Adds a timer to an executor.
   rclc_executor_add_subscription(&executor, &subscriber, &msg, &subscription_callback, ON_NEW_DATA);
-
-  gpio_put(LED_PIN, 1);
 
   msg.data = 0;
   while (true)
