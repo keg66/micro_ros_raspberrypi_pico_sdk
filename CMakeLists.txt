@@ -34,6 +34,19 @@ target_include_directories(pico_micro_ros_example PUBLIC
     include
 )
 
+
+add_library(main_test
+    src/main_test.c
+)
+target_link_libraries(main_test
+    # pico_stdlib
+    microros
+)
+target_include_directories(main_test PUBLIC
+    libmicroros/include
+    include
+)
+
 SET(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -ffunction-sections -fdata-sections")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -ffunction-sections -fdata-sections")
 
